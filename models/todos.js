@@ -2,19 +2,19 @@ const db = require('sqlite')
 const _ = require('lodash')
 
 module.exports = {
-  getAll() {
+getAllTodos() {
     return db.all("SELECT rowid AS id, * FROM todos")
   },
-  getMax() {
-    return db.all("SELECT rowid AS id, * FROM todos WHERE rowid = max(rowid)")
-  },
-  findOne(id) {
+  // getMax() {
+  //   return db.all("SELECT rowid AS id, * FROM todos WHERE rowid = max(rowid)")
+  // },
+  findOneTodo(id) {
     return db.get("SELECT rowid AS id, name FROM todos WHERE rowid = ?", id)
   },
-  async create(params) {
+  async createTodo(params) {
 
-    params.created_at = new Date()
-    params.updated_at = new Date()
+    params.createdAt = new Date()
+    params.updatedAt = new Date()
 
     const data = _.values(params)
 
@@ -22,12 +22,12 @@ module.exports = {
 
     const { lastID } = await db.run("INSERT INTO todos VALUES(?,?,?,?)", data)
 
-    return this.findOne(lastID)
+    return this.findOneTodo(lastID)
   },
-  delete(id) {
+  deleteTodo(id) {
     return db.run("DELETE FROM todos WHERE rowid = ?", id)
   },
-  async update(params) {
+  async updateTodo(params) {
     let string = ''
 
     for (k in params) {
@@ -42,7 +42,7 @@ module.exports = {
     const { changes } = await db.run("UPDATE todos SET " + string + " WHERE rowid = ?", data)
     
     if (changes !== 0) {
-      return this.findOne(params.id)
+      return this.findOneTodo(params.id)
     } else {
       return Promise.reject({ message: 'Could not find id' })
     }
