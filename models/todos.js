@@ -2,12 +2,10 @@ const db = require('sqlite')
 const _ = require('lodash')
 
 module.exports = {
-getAllTodos() {
+  getAllTodos() {
     return db.all("SELECT rowid AS id, * FROM todos")
   },
-  // getMax() {
-  //   return db.all("SELECT rowid AS id, * FROM todos WHERE rowid = max(rowid)")
-  // },
+
   findOneTodo(id) {
     return db.get("SELECT rowid AS id, name FROM todos WHERE rowid = ?", id)
   },
@@ -15,18 +13,18 @@ getAllTodos() {
 
     params.createdAt = new Date()
     params.updatedAt = new Date()
-
     const data = _.values(params)
 
     console.log(data)
-
+    
     const { lastID } = await db.run("INSERT INTO todos VALUES(?,?,?,?)", data)
-
     return this.findOneTodo(lastID)
   },
+  
   deleteTodo(id) {
     return db.run("DELETE FROM todos WHERE rowid = ?", id)
   },
+
   async updateTodo(params) {
     let string = ''
 
