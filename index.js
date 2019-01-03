@@ -2,7 +2,7 @@ const db = require('sqlite')
 const express = require('express')
 const bodyParser = require('body-parser')
 const api = express()
-const _method = require("method-override")
+const methodOverride = require("method-override")
 
 db.open('api.db').then(() => {
   Promise.all([
@@ -18,17 +18,18 @@ db.open('api.db').then(() => {
 api.set('views', './views/todos')
 api.set('view engine', 'hbs')
 
+//REDIRECTION
+// api.all('/', (req, res, next) => {
+//   res.redirect(301, '/todos')
+// })
+
 // MIDDLEWARE POUR PARSER LE BODY
 api.use(bodyParser.json())
 api.use(bodyParser.urlencoded({ extended: false }))
-api.use(_method('_method'))
+api.use(methodOverride('_method'))
 
 // ROUTES
-api.use('/todos', require('./controllers/todos'))
-
-api.all('/', (req, res, next) => {
-  res.redirect(301, '/todos')
-})
+api.use('/', require('./controllers/todos'))
 
 api.listen(8080);
 
