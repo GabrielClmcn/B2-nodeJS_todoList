@@ -12,15 +12,22 @@ module.exports = {
 
         params.createdAt = new Date()
         params.updatedAt = new Date()
-    
-        const data = _.values(params)
-        
-        console.log(data)
-        const { lastID } = await db.run("INSERT INTO sessions VALUES(?, ?, ?, ?)", data)
 
-        // console.log(data) 
+        db.all("SELECT username FROM users WHERE username = ?", params.username).then(() => {
+            console.log(trow, "La colonne existe !!!!!")
+        }).catch(() =>{
+
+            // const token = crypto.randomBytes(256);
+            // params.accessToken = token.toString('hex')
     
-        return this.findOneUser(lastID)
+            const data = _.values(params)
+        
+            console.log(data)
+            console.log("---------User créée-------")
+            const { lastID } = db.run("INSERT INTO users VALUES(?, ?, ?, ?, ?, ?, ?)", data)
+    
+            return this.findOneUser(lastID)
+        })
     },
     deleteUser(id) {
         return db.run("DELETE FROM users WHERE rowid = ?", id)

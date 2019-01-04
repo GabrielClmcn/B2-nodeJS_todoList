@@ -19,8 +19,7 @@ router.get('/', (req, res) => {
           content += '<p style="width: 300px; display: inline; margin-left: 30px"> Created at :' + moment(todo['createdAt']).format('MMMM Do YYYY, h:mm:ss a') + '</p>';
           content += '<p style="width: 300px; display: inline; margin-left: 30px"> Updated at :' + moment(todo['updatedAt']).format('MMMM Do YYYY, h:mm:ss a') + '</p></div>';
         });
-        console.log(content)
-        //console.log(todos)
+        //console.log(content)
           res.render("show", {
               title: 'Todo List',
               content: content
@@ -50,28 +49,6 @@ router.post('/add', (req, res) => {
     console.log(req.body)
   })
 })
-
-//GET /session
-router.get('/session', (req, res) => {
-  console.log('--> GET /session')
-  res.render('pass.hbs')
-})
-
-router.post('/session', (req, res) => {
-  console.log('--> POST /session')
-  bcrypt.hash(req.body.pass, 10).then((hash) => {
-    console.log(req.body.pass)
-    console.log(req.body)
-    req.body.pass = hash
-    Users.createUser(req.body).then((todo) => {
-      res.redirect(301, '/')
-      // console.log(req.body)
-    }).catch((err) => {
-    return res.status(404).send(err)
-    })}).catch((err) => {
-    return res.status(404).send(err)
-    })
-  })
 
 
 //GET /:id

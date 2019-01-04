@@ -10,7 +10,8 @@ db.open('api.db').then(() => {
   Promise.all([
     db.run("CREATE TABLE IF NOT EXISTS todos (name, completion, createdAt, updatedAt)"),
     db.run("CREATE TABLE IF NOT EXISTS users (firstname, lastname, username, password, email, createdAt, updatedAt)"),
-    db.run("CREATE TABLE IF NOT EXISTS sessions (userId, accessToken, createdAt, updatedAt)")
+    db.run("CREATE TABLE IF NOT EXISTS sessions (userId, accessToken, createdAt, updatedAt)"),
+    db.all("SELECT * FROM users INNER JOIN sessions ON users.username = sessions.userId ")
   ]).then(() => {
     console.log('Database is ready')
   }).catch((err) => {
