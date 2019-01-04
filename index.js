@@ -3,11 +3,14 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const api = express()
 const methodOverride = require("method-override")
+const session = require('express-session')
+const FileStore = require('session-file-store')(session);
 
 db.open('api.db').then(() => {
   Promise.all([
     db.run("CREATE TABLE IF NOT EXISTS todos (name, completion, createdAt, updatedAt)"),
     db.run("CREATE TABLE IF NOT EXISTS users (firstname, lastname, username, password, email, createdAt, updatedAt)"),
+    db.run("CREATE TABLE IF NOT EXISTS sessions (userId, accessToken, createdAt, updatedAt)")
   ]).then(() => {
     console.log('Database is ready')
   }).catch((err) => {
@@ -35,6 +38,14 @@ api.use('/todos', require('./controllers/todos'))
 api.all('/', (req, res, next) => {
   res.redirect(301, '/todos')
 })
+
+//SESSION
+api.use(session({ 
+  secret: 'this-is-a-secret-token', 
+  store: new FileStore(),
+  cookie: { maxAge: 60000 }
+  })
+)
 
 
 api.listen(8080);

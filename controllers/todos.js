@@ -2,6 +2,8 @@ const router = require('express').Router()
 const Todos = require('./../models/todos')
 const moment = require('moment');
 const _ = require('lodash')
+const bcrypt = require('bcrypt')
+const Users = require('./../models/users')
 
 //GET /
 router.get('/', (req, res) => {
@@ -32,6 +34,7 @@ router.get('/', (req, res) => {
     return res.status(404).send(err)
   })
 })
+
 //GET /add
 router.get('/add', (req, res) => {
   console.log('--> GET /add')
@@ -47,6 +50,30 @@ router.post('/add', (req, res) => {
     console.log(req.body)
   })
 })
+
+//GET /session
+router.get('/session', (req, res) => {
+  console.log('--> GET /session')
+  res.render('pass.hbs')
+})
+
+router.post('/session', (req, res) => {
+  console.log('--> POST /session')
+  bcrypt.hash(req.body.pass, 10).then((hash) => {
+    console.log(req.body.pass)
+    console.log(req.body)
+    req.body.pass = hash
+    Users.createUser(req.body).then((todo) => {
+      res.redirect(301, '/')
+      // console.log(req.body)
+    }).catch((err) => {
+    return res.status(404).send(err)
+    })}).catch((err) => {
+    return res.status(404).send(err)
+    })
+  })
+
+
 //GET /:id
 router.get('/:id', (req, res) => {
   console.log('--> GET /:id (id : ', req.params.id, ')')

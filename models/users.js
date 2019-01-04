@@ -14,10 +14,11 @@ module.exports = {
         params.updatedAt = new Date()
     
         const data = _.values(params)
-
+        
         console.log(data)
-    
-        const { lastID } = await db.run("INSERT INTO users VALUES(?, ?, ?, ?, ?)", data)
+        const { lastID } = await db.run("INSERT INTO sessions VALUES(?, ?, ?, ?)", data)
+
+        // console.log(data) 
     
         return this.findOneUser(lastID)
     },
