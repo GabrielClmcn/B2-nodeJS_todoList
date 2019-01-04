@@ -18,13 +18,8 @@ db.open('api.db').then(() => {
   })
 })
 
-api.set('views', './views/todos')
+api.set('views', __dirname + '/views/')
 api.set('view engine', 'hbs')
-
-//REDIRECTION
-// api.all('/', (req, res, next) => {
-//   res.redirect(301, '/todos')
-// })
 
 // MIDDLEWARE POUR PARSER LE BODY
 api.use(bodyParser.json())
@@ -33,6 +28,7 @@ api.use(methodOverride('_method'))
 
 // ROUTES
 api.use('/todos', require('./controllers/todos'))
+api.use('/users', require('./controllers/users'))
 
 //REDIRECTION
 api.all('/', (req, res, next) => {
@@ -46,7 +42,6 @@ api.use(session({
   cookie: { maxAge: 60000 }
   })
 )
-
 
 api.listen(8080);
 
