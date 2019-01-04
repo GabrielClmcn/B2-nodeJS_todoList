@@ -35,9 +35,16 @@ router.get('/', (req, res) => {
 //GET /add
 router.get('/add', (req, res) => {
   console.log('--> GET /add')
-  res.render('edit',
-  {
-  title: 'Bonjour !'
+  res.render('edit.hbs')
+})
+
+router.post('/add', (req, res) => {
+  if (!req.body.completion) req.body.completion = "NON FAIT"
+  else req.body.completion = "FAIT"
+  console.log(req.body.completion)
+  Todos.createTodo(req.body).then((todo) => {
+    res.redirect(301, '/')
+    console.log(req.body)
   })
 })
 //GET /:id
@@ -85,7 +92,7 @@ router.post('/add', (req, res) => {
   })
 })
 
-//POST + redirect 301 a,d json for /
+//POST + redirect 301 and json for /
 router.post('/', (req, res) => {
   console.log(req.body)
   if (!req.body || (req.body && (!req.body.name || !req.body.completion))) 
