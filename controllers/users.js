@@ -51,4 +51,44 @@ router.post('/add', (req, res) => {
     })
   })
 
-module.exports = router
+//GET /:id  show User informations
+router.get('/:id', (req, res, next) => {
+    Users.findOneUser(req.params.id).then((user) => {
+      res.format({
+        html: () => { // Prepare content
+  
+          let content = ''
+
+          content += '<b> id:</b>'+user.id+'<br>',
+          content += '<b> fName:</b>'+user.firstname+'<br>',
+          content += '<b> lName:</b>'+user.lastname+'<br>',
+          content += '<b> userName:</b>'+user.username+'<br>',
+          content += '<b> mail:</b>'+user.email+'<br>',
+  
+          res.render("show", {  
+            title: 'Profil de ' + user['username'],
+            content: content
+          })
+        },
+        json: () => {
+          res.json(user)
+        }
+      })
+    })
+    .catch((err) => {
+      console.log(err)
+      return next(err)
+    })
+  })
+
+//GET /:id/edit
+router.get('/:id/edit-1', (req, res) => {
+  console.log('--> GET /:id/edit (id : ', req.params.id, ')')
+  res.render('edit-1',
+  {
+  title: 'Bonjour !',
+  content: "MA PAGE"
+  })
+})
+
+  module.exports = router
