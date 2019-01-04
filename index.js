@@ -26,9 +26,11 @@ api.use(_method('_method'))
 // ROUTES
 api.use('/todos', require('./controllers/todos'))
 
+//REDIRECTION
 api.all('/', (req, res, next) => {
   res.redirect(301, '/todos')
 })
+
 
 api.listen(8080);
 
