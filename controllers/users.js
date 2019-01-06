@@ -3,6 +3,8 @@ const moment = require('moment');
 const _ = require('lodash')
 const bcrypt = require('bcrypt')
 const Users = require('./../models/users')
+const Todos = require('./../models/todos')
+
 
 //GET /
 router.get('/', (req, res, next) => {
@@ -41,8 +43,12 @@ router.post('/add', (req, res) => {
     console.log(req.body.username, "Controllers/Users")
     req.body.pass = hash
     Users.createUser(req.body).then((todo) => {
-      console.log(todo.userId)
-      res.redirect(301, "/users/"+todo.userId+"")
+      // if(todo == undefined) {
+      //   todo = 1
+      // }
+      console.log("TODO.USERID : ", todo)
+      res.redirect(301, "/users/"+todo.id+"")
+      
       // console.log(req.body)
     }).catch((err) => {
     return res.status(404).send(err)
@@ -53,9 +59,8 @@ router.post('/add', (req, res) => {
 
 //GET /:id  show User informations
 router.get('/:id', (req, res, next) => {
-    Users.findLastUser().then((users) => {
-      console.log(users.userId)
-      Users.findOneUser(users.userId).then((user) => {
+    
+      Users.findOneUser(req.params.id).then((user) => {
       res.format({
         html: () => { // Prepare content
   
@@ -76,7 +81,6 @@ router.get('/:id', (req, res, next) => {
           res.json(user)
         }
       })
-    })
   })
     .catch((err) => {
       console.log(err)
@@ -96,22 +100,25 @@ router.get('/:id/edit-1', (req, res) => {
 
 //GET /:id/todos
 router.get('/:id/todos', (req, res) => {
-  // Users.findLastUser().then((users) =>{
-  //   Users.findOneUser(users.userId).then((user) =>{
-  Todos.getAllTodos().then((todos) => {
+  Users.findLastUser().then((users) =>{
+    Users.findOneUser(users.userId).then((user) =>{
+      console.log("USER :", user.id)
 
+  Todos.getTodosOneUser(user.id).then((todos) => {
+    console.log("TODOS :", todos)
     res.format({
       html: () => {//prepare content
         let content = ''
 
         todos.forEach((todo) => {
-          content += '<div style="border: 1px solid black; margin: 15px; width: 900px"><h2 style="width: 100px; display: inline; margin-left: 30px">' + todo.id + '. ' + todo.name + '</h2>';
+          console.log("TODO :", todo)
+          content += '<div style="border: 1px solid black; margin: 15px; width: 900px"><h2 style="width: 100px; display: inline; margin-left: 30px">' + todo.id + '. ' + todo.message + '</h2>';
           content += '<p style="width: 300px; display: inline; margin-left: 30px">' + 'Status : ' + todo['completion'] + '</p>';
           content += '<p style="width: 300px; display: inline; margin-left: 30px"> Created at :' + moment(todo['createdAt']).format('MMMM Do YYYY, h:mm:ss a') + '</p>';
           content += '<p style="width: 300px; display: inline; margin-left: 30px"> Updated at :' + moment(todo['updatedAt']).format('MMMM Do YYYY, h:mm:ss a') + '</p></div>';
         });
         //console.log(content)
-          res.render("show", {
+          res.render("index", {
               title: 'Todo List',
               content: content
           })
@@ -123,6 +130,8 @@ router.get('/:id/todos', (req, res) => {
   }).catch((err) => {
     return res.status(404).send(err)
   })
+})//findOneUser
+})//findLastUser
 })
 
 

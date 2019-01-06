@@ -6,16 +6,21 @@ module.exports = {
   getAllTodos() {
     return db.all("SELECT rowid AS id, * FROM todos")
   },
+  getTodosOneUser(id) {
+    return db.all("SELECT rowid AS id, * FROM todos WHERE userId = ?", id)
+  },
 
   findOneTodo(id) {
     return db.get("SELECT rowid AS id, message FROM todos WHERE rowid = ?", id)
   },
-  async createTodo(lastUser, params) {
-    console.log("lasUser : ", lastUser.userId)
-    params.userId = lastUser.userId
+  async createTodo(params, lastUser) {
+    // console.log("lasUser : ", lastUser.userId)
     params.createdAt = new Date()
     params.updatedAt = new Date()
     const data = _.values(params)
+    data.unshift(lastUser)
+
+    console.log("PARAMS : ", params)
     console.log("DATA : ", data)
     
     const { lastID } = await db.run("INSERT INTO todos VALUES(?,?,?,?,?)", data)

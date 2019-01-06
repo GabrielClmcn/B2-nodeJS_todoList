@@ -69,7 +69,8 @@ router.post('/add', (req, res) => {
     else req.body.completion = "FAIT"
     console.log(req.body.completion)
     Users.findLastUser().then((user) => {
-    Todos.createTodo(user, req.body).then((todo) => {
+        console.log(user)
+    Todos.createTodo(req.body, user.userId).then((todo) => {
       console.log("REQ.BODY:", todo)
       res.redirect(301, '/todos')
       console.log("REQ.BODY:", todo)
@@ -126,8 +127,7 @@ router.get('/:id/edit', (req, res, next) => {
   Todos.findOneTodo(req.params.id).then((todo) => {
     res.render("edit", {
       title: "Edit a todo",
-      content: todo.message,
-      idAndMethod: req.body.message
+      content: todo.message
     })
   })
   console.log(req.body)

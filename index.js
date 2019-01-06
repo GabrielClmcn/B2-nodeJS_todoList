@@ -11,7 +11,6 @@ db.open('api.db').then(() => {
     db.run("CREATE TABLE IF NOT EXISTS todos (userId, message, completion, createdAt, updatedAt)"),
     db.run("CREATE TABLE IF NOT EXISTS users (firstname, lastname, username, password, email, createdAt, updatedAt)"),
     db.run("CREATE TABLE IF NOT EXISTS sessions (userId, createdAt, updatedAt)")
-    // db.all("SELECT * FROM users CROSS JOIN todos ON users.rowid = todos.userId ")
   ]).then(() => {
     console.log('Database is ready')
   }).catch((err) => {

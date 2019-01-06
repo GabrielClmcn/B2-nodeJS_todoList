@@ -7,8 +7,9 @@ module.exports = {
     },
 
     userConnect(id) {
-        db.each("SELECT rowid AS userid FROM users WHERE userid = ?", id, (err, row) => {
+        db.each("SELECT rowid AS userid, createdAt, updatedAt FROM users WHERE userid = ?", id, (err, row) => {
             if(row){
+                console.log("ROW : ", row)
                 db.run("INSERT INTO sessions VALUES(?,?,?)", row.userid, row.createdAt, row.updatedAt)
             }else   console.log(err);
         })
@@ -33,25 +34,10 @@ module.exports = {
         console.log(data ,"Models/Users")
         console.log("---------User créée-------")
         const { lastID } = await db.run("INSERT INTO users VALUES(?, ?, ?, ?, ?, ?, ?)", data)
-           
-        return this.userConnect(lastID)
+        console.log("LASTID : ", lastID)
+        this.userConnect(lastID)
+        return this.findOneUser(lastID)
         
-        // db.each("SELECT username FROM users WHERE username = ?", params.username, (err, row) => {
-        //     if(row.username.length != null) {
-        //         console.log(params.username, "Models/Users")
-        //         console.log(row, "La colonne existe !!!!!")
-        //         console.log(row.username, "LA COLONNE EXISTE ")
-        //     }else {
-        // console.log(row.username, "LA COLONNE EXISTE 2")
-        // console.log(row, "LA COLONNE EXISTE 3")
-
-                    //CREATION DE TOKEN
-                    // const token = crypto.randomBytes(256);
-                    // params.accessToken = token.toString('hex')
-            
-        
-            // }
-        // })
     },
 
     deleteUser(id) {
