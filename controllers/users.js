@@ -134,5 +134,19 @@ router.get('/:id/todos', (req, res) => {
 })//findLastUser
 })
 
+//404
+router.use((req, res) => {
+  res.format({
+      html: () => {
+          res.render('404', {
+              title: 'Page non trouvé',
+              content: 'Page 404, mauvais chemin !'
+          })
+      },
+      json: () => {
+          res.json({message : 'Page 404, mauvais chemin !'})
+      }
+  })
+})
 
   module.exports = router
