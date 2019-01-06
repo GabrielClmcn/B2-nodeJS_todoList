@@ -29,6 +29,24 @@ router.get('/', (req, res, next) => {
     })
   })
 
+  router.post('/', (req, res) => {
+    console.log('--> POST /users')
+    Users.findUsername(req.body.username).then((user) => {
+        console.log(req.body.pass, "Controllers/Users REQ.BODY.PASSWORD")
+        console.log(user.password, "Controllers/Users USER.PASSWORD")
+        bcrypt.compare(req.body.pass, user.password, (err, result) => {
+          if(result == true){
+            Users.userConnect(user.id).then((use) => {
+           res.redirect(301, "/users/"+use.userId+"")
+            })
+           console.log("CEST BOOOOOON")
+          }else return res.status(404).send(err)
+        })
+      }).catch((err) => {
+      return res.status(404).send(err)
+      })
+    })
+
 
   //GET /add 
 router.get('/add', (req, res) => {
@@ -59,8 +77,8 @@ router.post('/add', (req, res) => {
 
 //GET /:id  show User informations
 router.get('/:id', (req, res, next) => {
-    
       Users.findOneUser(req.params.id).then((user) => {
+        let id = user.id
       res.format({
         html: () => { // Prepare content
   
@@ -74,15 +92,15 @@ router.get('/:id', (req, res, next) => {
   
           res.render("show", {  
             title: 'Profil de ' + user['username'],
-            content: content
+            content: content,
+            id: id
           })
         },
         json: () => {
           res.json(user)
         }
       })
-  })
-    .catch((err) => {
+  }).catch((err) => {
       console.log(err)
       return next(err)
     })
@@ -102,7 +120,7 @@ router.get('/:id/edit-1', (req, res) => {
 router.get('/:id/todos', (req, res) => {
   Users.findLastUser().then((users) =>{
     Users.findOneUser(users.userId).then((user) =>{
-      console.log("USER :", user.id)
+      console.log("USER -> TODOS:", user.id)
 
   Todos.getTodosOneUser(user.id).then((todos) => {
     console.log("TODOS :", todos)

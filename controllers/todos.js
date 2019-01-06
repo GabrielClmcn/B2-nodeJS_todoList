@@ -8,12 +8,13 @@ const Users = require('./../models/users')
 // / -- index
 //GET / --- FONCTIONNE
 router.get('/', (req, res) => {
+    Users.findLastUser().then((user) => {
     Todos.getAllTodos().then((todos) => {
-
+        let id = user.userId
         res.format({
             html: () => {
                 let content = ''
-                let id = ''
+                // let id = ''
 
                 todos.forEach((todo) => {
                     content += '<div style="border: 1px solid black; margin: 15px; width: 1500px"><h2 style="width: 100px; display: inline; margin-left: 30px">' + todo['message'] + '</h2>';
@@ -30,12 +31,16 @@ router.get('/', (req, res) => {
                 res.render('index', {
                     title: 'TODO LIST',
                     content: content,
+                    id: id
                 })
             },
             json: () => {
                 res.json(todos)
             }
         })
+    }).catch((err) => {
+        return res.status(404).send(err)
+    })
     }).catch((err) => {
         return res.status(404).send(err)
     })
@@ -60,7 +65,14 @@ router.post('/', (req, res) => {
 //GET /add 
 router.get('/add', (req, res) => {
     console.log('--> GET /add')
-    res.render('edit')
+    Users.findLastUser().then((user) => {
+        let id = user.userId
+        res.render('edit', {
+            id: id
+        })
+    }).catch((err) => {
+    return res.status(404).send(err)
+})
 })
 
 //POST /add --- A SUPPRIMER TOUT DANS LE GET /ADD
@@ -83,12 +95,15 @@ router.post('/add', (req, res) => {
 // /:id -- show --- FONCTIONNE
 //GET /:id
 router.get('/:id', (req, res) => {
+    Users.findLastUser().then((user) => {
+        let id = user.userId
     Todos.findOneTodo(req.params.id).then((todo) => {
     res.format({
         html: () => {
             res.render('show', {
                 title: 'cc',
                 content: todo.name,
+                id: id
             })
         },
         json: () => {
@@ -96,7 +111,11 @@ router.get('/:id', (req, res) => {
         }
     })
 }).catch((err) => {
-    return res.status(404).send(err)})
+    return res.status(404).send(err)
+})
+}).catch((err) => {
+    return res.status(404).send(err)
+})
 })
 //PATCH /:id --- A FINIR
 
@@ -124,13 +143,17 @@ router.get('/:id/edit', (req, res, next) => {
     }
   if (!req.body.completion) req.body.completion = "NON FAIT"
   else req.body.completion = "FAIT"
+  Users.findLastUser().then((user) => {
+    let id = user.userId
   Todos.findOneTodo(req.params.id).then((todo) => {
     res.render("edit", {
       title: "Edit a todo",
-      content: todo.message
+      content: todo.message,
+      id: id
     })
   })
   console.log(req.body)
+})
 })
 
 router.post('/:id/edit', (req, res) => {

@@ -23,6 +23,9 @@ module.exports = {
     findOneUser(id) {
         return db.get("SELECT rowid AS id, * FROM users WHERE id = ?", id)
    },
+   findUsername(username) {
+    return db.get("SELECT rowid AS id, * FROM users WHERE username = ?", username)
+},
 
     async createUser(params) {
 
