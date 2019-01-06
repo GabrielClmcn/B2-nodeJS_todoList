@@ -1,16 +1,46 @@
 <!DOCTYPE html>
-    <html>
-        <head>
-            <title>title</title>
-        </head>
-        <body class="container">
-            <h1>Bonjour</h1>
-            <form method="POST" style="border: 1px solid black; margin: 15px; width: 450px">
-                <label for="name" style="width: 300px; display: inline; margin-left: 10px">Nom du Todo :</label>
+<html>
+    <head>
+        <title>{{title}}</title>
+        <style>
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333;
+        }
+
+        li {
+            float: left;
+        }
+
+        li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        /* Change the link color to #111 (black) on hover */
+        li a:hover {
+            background-color: #71bd7e;
+        } 
+    </style>
+</head>
+<body class="container">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/todos/add">Add a todo</a></li>
+            <li><a href="/users/{{id}}">Mon profil</a></li>
+        </ul>
+        <form method="PATCH", method="POST" style="border: 1px solid black; margin: 15px; width: 450px">
+            <label for="name" style="width: 300px; display: inline; margin-left: 10px">Nom du Todo : {{content}}</label>
                 <input type="text" name="name" style="width: 300px; margin-left: 10px"></br>
                 <label for="completion" style="width: 300px; margin-left: 30px">Fait ?</label>
                 <input type="checkbox" name="completion" style="width: 30px; margin-right: 10px; margin-top: 10px">
                 <input type="submit" value="Submit" style="width: 100px; margin-left: 200px; margin-top: 10px">
-            </form>
-        </body>
-    </html>
+        </form>
+    </body>
+</html>
