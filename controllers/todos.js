@@ -69,7 +69,7 @@ router.post('/add', (req, res) => {
     else req.body.completion = "FAIT"
     console.log(req.body.completion)
     Todos.createTodo(req.body).then((todo) => {
-      res.redirect(301, '/')
+      res.redirect(301, '/todos')
       console.log(req.body)
     })
   })
@@ -95,20 +95,7 @@ router.get('/:id', (req, res) => {
     return res.status(404).send(err)})
 })
 //PATCH /:id --- A FINIR
-router.patch('/:id', (req, res) => {
-    Todos.updateTodo(req.params.id).then((todo) => {
-        res.format({
-            html: () => {
-                res.redirect(301, '/')
-            },
-            json: () => {
-                res.json({message : 'Todo modifié avec succès'})
-            }
-        })
-    }).catch((err) => {
-        return res.status(404).send(err)
-    })
-})
+
 //DELETE /:id -- index --- FONCTIONNE
 router.delete('/:id', (req, res) => {
     Todos.deleteTodo(req.params.id).then(() => {
@@ -141,6 +128,21 @@ router.get('/:id/edit', (req, res, next) => {
     })
   })
   console.log(req.body)
+})
+
+router.post('/:id/edit', (req, res) => {
+    Todos.updateTodo(req.body, req.params.id).then((todo) => {
+        res.format({
+            html: () => {
+                res.redirect(301, '/')
+            },
+            json: () => {
+                res.json({message : 'Todo modifié avec succès'})
+            }
+        })
+    }).catch((err) => {
+        return res.status(404).send(err)
+    })
 })
 
 

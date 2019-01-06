@@ -25,7 +25,7 @@ module.exports = {
     return db.run("DELETE FROM todos WHERE rowid = ?", id)
   },
 
-  async updateTodo(params) {
+  async updateTodo(params, todoId) {
     let string = ''
 
     for (k in params) {
@@ -35,9 +35,8 @@ module.exports = {
     }
 
     string = string.substring(0, string.length - 1); // Remove last comma
-
     const data = _.values(params)
-    const { changes } = await db.run("UPDATE todos SET " + string + " WHERE rowid = ?", data)
+    const { changes } = await db.run("UPDATE todos SET " + string + " WHERE rowid = "+todoId+"", data)
     
     if (changes !== 0) {
       return this.findOneTodo(params.id)
