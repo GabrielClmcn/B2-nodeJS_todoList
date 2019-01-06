@@ -8,10 +8,10 @@ const FileStore = require('session-file-store')(session);
 
 db.open('api.db').then(() => {
   Promise.all([
-    db.run("CREATE TABLE IF NOT EXISTS todos (name, completion, createdAt, updatedAt)"),
+    db.run("CREATE TABLE IF NOT EXISTS todos (userId, message, completion, createdAt, updatedAt)"),
     db.run("CREATE TABLE IF NOT EXISTS users (firstname, lastname, username, password, email, createdAt, updatedAt)"),
-    db.run("CREATE TABLE IF NOT EXISTS sessions (userId, accessToken, createdAt, updatedAt)"),
-    // db.all("SELECT * FROM users INNER JOIN sessions ON users.username = sessions.userId ")
+    db.run("CREATE TABLE IF NOT EXISTS sessions (userId, createdAt, updatedAt)")
+    // db.all("SELECT * FROM users CROSS JOIN todos ON users.rowid = todos.userId ")
   ]).then(() => {
     console.log('Database is ready')
   }).catch((err) => {

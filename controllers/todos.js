@@ -16,8 +16,7 @@ router.get('/', (req, res) => {
                 let id = ''
 
                 todos.forEach((todo) => {
-                    id = Users['name'],
-                    content += '<div style="border: 1px solid black; margin: 15px; width: 1500px"><h2 style="width: 100px; display: inline; margin-left: 30px">' + todo.id + '. ' + todo.name + '</h2>';
+                    content += '<div style="border: 1px solid black; margin: 15px; width: 1500px"><h2 style="width: 100px; display: inline; margin-left: 30px">' + todo['message'] + '</h2>';
                     content += '<p style="width: 300px; display: inline; margin-left: 30px">' + 'Status : ' + todo['completion'] + '</p>';
                     content += '<p style="width: 300px; display: inline; margin-left: 30px"> Created at :' + moment(todo['createdAt']).format('MMMM Do YYYY, h:mm:ss a') + '</p>';
                     content += '<p style="width: 300px; display: inline; margin-left: 30px"> Updated at :' + moment(todo['updatedAt']).format('MMMM Do YYYY, h:mm:ss a') + '</p>';
@@ -26,6 +25,7 @@ router.get('/', (req, res) => {
                     content += '<form action="/todos/'+todo['id']+'?_method=DELETE", method="POST"> <button type="submit" style="height: 30px; width: 100px; margin-left: 200px; margin-top: 10px">Supprimer</form>' //Suppr
                     content += '<form action="/todos/'+todo['id']+'/edit/"> <button type="submit" style="height: 30px; width: 100px; margin-left: 200px; margin-top: 10px">Modifier</form>' //Modif
                     content += '<form action="/todos/'+todo['id']+'"> <button type="submit" style="height: 30px; width: 100px; margin-left: 200px; margin-top: 10px">Voir</form></div>' //Voir
+                    console.log(todo.message)
                 });
                 res.render('index', {
                     title: 'TODO LIST',
@@ -68,10 +68,13 @@ router.post('/add', (req, res) => {
     if (!req.body.completion) req.body.completion = "NON FAIT"
     else req.body.completion = "FAIT"
     console.log(req.body.completion)
-    Todos.createTodo(req.body).then((todo) => {
+    Users.findLastUser().then((user) => {
+    Todos.createTodo(user, req.body).then((todo) => {
+      console.log("REQ.BODY:", todo)
       res.redirect(301, '/todos')
-      console.log(req.body)
+      console.log("REQ.BODY:", todo)
     })
+  })
   })
   
 
@@ -123,8 +126,8 @@ router.get('/:id/edit', (req, res, next) => {
   Todos.findOneTodo(req.params.id).then((todo) => {
     res.render("edit", {
       title: "Edit a todo",
-      content: todo.name,
-      idAndMethod: req.body.name
+      content: todo.message,
+      idAndMethod: req.body.message
     })
   })
   console.log(req.body)

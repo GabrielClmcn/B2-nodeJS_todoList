@@ -41,8 +41,8 @@ router.post('/add', (req, res) => {
     console.log(req.body.username, "Controllers/Users")
     req.body.pass = hash
     Users.createUser(req.body).then((todo) => {
-      console.log(todo.id)
-      res.redirect(301, "/users/"+todo.id+"")
+      console.log(todo.userId)
+      res.redirect(301, "/users/"+todo.userId+"")
       // console.log(req.body)
     }).catch((err) => {
     return res.status(404).send(err)
@@ -54,6 +54,7 @@ router.post('/add', (req, res) => {
 //GET /:id  show User informations
 router.get('/:id', (req, res, next) => {
     Users.findLastUser().then((users) => {
+      console.log(users.userId)
       Users.findOneUser(users.userId).then((user) => {
       res.format({
         html: () => { // Prepare content

@@ -1,5 +1,6 @@
 const db = require('sqlite')
 const _ = require('lodash')
+const Users = require('./../models/users')
 
 module.exports = {
   getAllTodos() {
@@ -7,17 +8,18 @@ module.exports = {
   },
 
   findOneTodo(id) {
-    return db.get("SELECT rowid AS id, name FROM todos WHERE rowid = ?", id)
+    return db.get("SELECT rowid AS id, message FROM todos WHERE rowid = ?", id)
   },
-  async createTodo(params) {
-
+  async createTodo(lastUser, params) {
+    console.log("lasUser : ", lastUser.userId)
+    params.userId = lastUser.userId
     params.createdAt = new Date()
     params.updatedAt = new Date()
     const data = _.values(params)
-
-    console.log(data)
+    console.log("DATA : ", data)
     
-    const { lastID } = await db.run("INSERT INTO todos VALUES(?,?,?,?)", data)
+    const { lastID } = await db.run("INSERT INTO todos VALUES(?,?,?,?,?)", data)
+    console.log("lastID : ", lastID)
     return this.findOneTodo(lastID)
   },
   
