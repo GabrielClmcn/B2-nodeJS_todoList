@@ -36,10 +36,10 @@ router.get('/', (req, res, next) => {
         console.log(user.password, "Controllers/Users USER.PASSWORD")
         bcrypt.compare(req.body.pass, user.password, (err, result) => {
           if(result == true){
-            Users.userConnect(user.id).then((use) => {
-           res.redirect(301, "/users/"+use.userId+"")
+            console.log("LE MDP EST BOOOOOON")
+            Users.userConnect(user.id).then(() => {
+           res.redirect(301, "/users/"+user.id+"")
             })
-           console.log("CEST BOOOOOON")
           }else return res.status(404).send(err)
         })
       }).catch((err) => {
@@ -121,7 +121,7 @@ router.get('/:id/todos', (req, res) => {
   Users.findLastUser().then((users) =>{
     Users.findOneUser(users.userId).then((user) =>{
       console.log("USER -> TODOS:", user.id)
-
+      let id = user.id
   Todos.getTodosOneUser(user.id).then((todos) => {
     console.log("TODOS :", todos)
     res.format({
@@ -138,7 +138,8 @@ router.get('/:id/todos', (req, res) => {
         //console.log(content)
           res.render("index", {
               title: 'Todo List',
-              content: content
+              content: content,
+              id: id
           })
       },
       json: () => {
