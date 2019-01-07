@@ -8,10 +8,8 @@ const Todos = require('./../models/todos')
 
 //GET /
 router.get('/', (req, res, next) => {
-
-    Users.getAllUsers()
-    .then((users) =>
-    {
+  Users.getAllUsers().then((users) =>
+{
       res.format({
         html: () => { 
             res.render("pass", {  
@@ -24,28 +22,27 @@ router.get('/', (req, res, next) => {
       })
     })
     .catch((err) => {
-      console.log(err)
       return next(err)
     })
   })
 
-  router.post('/', (req, res) => {
-    console.log('--> POST /users')
-    Users.findUsername(req.body.username).then((user) => {
-        console.log(req.body.pass, "Controllers/Users REQ.BODY.PASSWORD")
-        console.log(user.password, "Controllers/Users USER.PASSWORD")
-        bcrypt.compare(req.body.pass, user.password, (err, result) => {
-          if(result == true){
-            console.log("LE MDP EST BOOOOOON")
-            Users.userConnect(user.id).then(() => {
-           res.redirect(301, "/users/"+user.id+"")
-            })
-          }else return res.status(404).send(err)
-        })
-      }).catch((err) => {
-      return res.status(404).send(err)
+router.post('/', (req, res) => {
+  console.log('--> POST /users')
+  Users.findUsername(req.body.username).then((user) => {
+      // console.log(req.body.pass, "Controllers/Users REQ.BODY.PASSWORD")
+      // console.log(user.password, "Controllers/Users USER.PASSWORD")
+      bcrypt.compare(req.body.pass, user.password, (err, result) => {
+        if(result == true){
+          // console.log("LE MDP EST BOOOOOON")
+          Users.userConnect(user.id).then(() => {
+            res.redirect(301, "/users/"+user.id+"")
+          })
+        }else return res.status(404).send(err)
       })
-    })
+  }).catch((err) => {
+    return res.status(404).send(err)
+  })
+})
 
 
   //GET /add 
@@ -57,14 +54,14 @@ router.get('/add', (req, res) => {
 router.post('/add', (req, res) => {
   console.log('--> POST /users/add')
   bcrypt.hash(req.body.pass, 10).then((hash) => {
-    console.log(req.body.pass, "Controllers/Users")
-    console.log(req.body.username, "Controllers/Users")
+    // console.log(req.body.pass, "Controllers/Users")
+    // console.log(req.body.username, "Controllers/Users")
     req.body.pass = hash
     Users.createUser(req.body).then((todo) => {
       // if(todo == undefined) {
       //   todo = 1
       // }
-      console.log("TODO.USERID : ", todo)
+      // console.log("TODO.USERID : ", todo)
       res.redirect(301, "/users/"+todo.id+"")
       
       // console.log(req.body)
@@ -120,37 +117,37 @@ router.get('/:id/edit-1', (req, res) => {
 router.get('/:id/todos', (req, res) => {
   Users.findLastUser().then((users) =>{
     Users.findOneUser(users.userId).then((user) =>{
-      console.log("USER -> TODOS:", user.id)
+      // console.log("USER -> TODOS:", user.id)
       let id = user.id
-  Todos.getTodosOneUser(user.id).then((todos) => {
-    console.log("TODOS :", todos)
-    res.format({
-      html: () => {//prepare content
-        let content = ''
+      Todos.getTodosOneUser(user.id).then((todos) => {
+       // console.log("TODOS :", todos)
+        res.format({
+            html: () => {//prepare content
+              let content = ''
 
-        todos.forEach((todo) => {
-          console.log("TODO :", todo)
-          content += '<div style="border: 1px solid black; margin: 15px; width: 900px"><h2 style="width: 100px; display: inline; margin-left: 30px">' + todo.id + '. ' + todo.message + '</h2>';
-          content += '<p style="width: 300px; display: inline; margin-left: 30px">' + 'Status : ' + todo['completion'] + '</p>';
-          content += '<p style="width: 300px; display: inline; margin-left: 30px"> Created at :' + moment(todo['createdAt']).format('MMMM Do YYYY, h:mm:ss a') + '</p>';
-          content += '<p style="width: 300px; display: inline; margin-left: 30px"> Updated at :' + moment(todo['updatedAt']).format('MMMM Do YYYY, h:mm:ss a') + '</p></div>';
-        });
-        //console.log(content)
-          res.render("index", {
-              title: 'Todo List',
-              content: content,
-              id: id
+              todos.forEach((todo) => {
+                // console.log("TODO :", todo)
+                content += '<div style="border: 1px solid black; margin: 15px; width: 900px"><h2 style="width: 100px; display: inline; margin-left: 30px">' + todo.message + '</h2>';
+                content += '<p style="width: 300px; display: inline; margin-left: 30px">' + 'Status : ' + todo['completion'] + '</p>';
+                content += '<p style="width: 300px; display: inline; margin-left: 30px"> Created at :' + moment(todo['createdAt']).format('MMMM Do YYYY, h:mm:ss a') + '</p>';
+                content += '<p style="width: 300px; display: inline; margin-left: 30px"> Updated at :' + moment(todo['updatedAt']).format('MMMM Do YYYY, h:mm:ss a') + '</p></div>';
+              });
+              //console.log(content)
+                res.render("index", {
+                    title: 'Todo List',
+                    content: content,
+                    id: id
+                })
+            },
+            json: () => {
+                res.json(todos)
+            }
           })
-      },
-      json: () => {
-          res.json(todos)
-      }
-    })
-  }).catch((err) => {
-    return res.status(404).send(err)
-  })
-})//findOneUser
-})//findLastUser
+        }).catch((err) => {
+          return res.status(404).send(err)
+        })
+      })//findOneUser
+  })//findLastUser
 })
 
 //404

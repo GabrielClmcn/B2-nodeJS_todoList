@@ -20,11 +20,12 @@ module.exports = {
     const data = _.values(params)
     data.unshift(lastUser)
 
-    console.log("PARAMS : ", params)
-    console.log("DATA : ", data)
+    // console.log("PARAMS : ", params)
+    // console.log("DATA : ", data)
     
     const { lastID } = await db.run("INSERT INTO todos VALUES(?,?,?,?,?)", data)
-    console.log("lastID : ", lastID)
+    // console.log("lastID : ", lastID)
+    console.log("----- ToDo créée -----")
     return this.findOneTodo(lastID)
   },
   
